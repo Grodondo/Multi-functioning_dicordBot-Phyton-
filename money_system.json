@@ -1,0 +1,43 @@
+{}
+
+
+@client.command(pass_context=True)              #Commands
+async def join(ctx):
+    channel=ctx.message.author.voice.channel
+    voice = get(client.voice_clients, guild=ctx.guild)
+
+    #await voice.move_to(channel)
+    await ctx.send("is this the channel? " + channel)
+    voice = await channel.connect()
+    #await client.join_voice_channel(channel)
+    await ctx.send("leaving...")
+
+
+
+    @client.command(pass_context=True, name="createPoll")
+    async def _createPoll(ctx):
+        await ctx.send("Creatig Poll...")
+        # if ctx.author.client: return
+        # Poll = await client.wait_for("")
+        if ctx.content.lower() == "-createPoll":
+            await ctx.send("Enter options. Max 5. Type done when finished.")
+    
+        elif ctx.content.lower() == "done":
+            pass
+
+
+def get_proper_channel(channel_name):
+    for channel in client.get_all_channels():
+        print(channel.name)
+        if(channel_name == channel_name and channel.type is discord.ChannelType.voice):
+            return channel
+
+
+    
+@client.command(pass_context=True)              #Commands
+async def join(ctx):
+    await ctx.send("Joining...")
+    voice_channel = get_proper_channel("Afk")
+    
+    await voice_channel.connect()
+    #await client.join_voice_channel(voice_channel)
