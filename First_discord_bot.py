@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands, tasks
-from discord.ext.commands import has_permissions 
 from discord.utils import get
 from itertools import cycle
 from datetime import datetime, timedelta
@@ -16,8 +15,6 @@ Client = discord.Client()
 client.remove_command("help")
 
 status = cycle(["Overwatch", "Overwatch Ping Pong"])
-# Create_Poll variables:
-numbers = ("1️⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣", "🔟")
 
 @client.event
 async def on_ready():
@@ -120,33 +117,6 @@ async def Help(ctx):
     embed.set_footer(text="Prefix:  " + Prefix)
 
     await author.send(embed=embed)
-
-
-#----------POLL-----------------------------
-        
-@client.command(name="Poll", aliases=["createPoll", "CreatePoll"])
-@has_permissions(manage_guild=True)
-async def _createPoll(ctx, question, *options):
-    if len(options) > 10:
-        await ctx.send("You can only supply up to 10 options.")
-    else:
-        embed = discord.Embed(title="Poll", description=question, colour=ctx.author.colour, timestamp=datetime.utcnow())
-
-        fields = [("Options", "\n".join([f"{numbers[idx]} {option}" for idx, option in enumerate(options)]), False),
-                  ("Instructions", "React to vote!", False)]
-        
-        for name, value, inline in fields:
-            embed.add_field(name=name, value=value, inline=inline)
-        message = await ctx.send(embed=embed)
-
-        print("May the light guide us all")
-
-        for emoji in numbers[:len(options)]:
-            await message.add_reaction(emoji)
-
-
-
-#--------------------------------------------
 
 
 
