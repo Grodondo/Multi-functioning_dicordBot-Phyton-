@@ -4,7 +4,6 @@ from discord.ext.commands import has_permissions
 from discord.utils import get
 from itertools import cycle
 from datetime import datetime, timedelta
-from pygooglechart import PieChart2D
 import random
 import os
 
@@ -124,15 +123,7 @@ async def Help(ctx):
 
 
 #----------POLL-----------------------------
-#----------CHART----------------------------
-def create_poll_chart():
-    chart = PieChart2D(450, 300)
-    chart.add_data([])              #data that should be added in the chart
-    chart.set_pie_labels([])        #labels to every data
-    print(chart.get_url())
-    chart.download('pie-chart.png')
-    return chart.get_url()
-        
+
 @client.command(name="Poll", aliases=["createPoll"])
 @has_permissions(manage_guild=True)
 async def _createPoll(ctx, question, *options):
