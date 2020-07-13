@@ -7,6 +7,9 @@ from datetime import datetime, timedelta
 import random
 import os
 
+#Made by Grodondo(Cdj), planning on updating it later on and including a monetary system.
+#This was a proyect made for a discord server based on the Ping Pong minigame from Overwatch, feel free to change its code at will.
+
 Prefix = "!"
 client = commands.Bot(command_prefix = Prefix)
 Client = discord.Client()
@@ -111,9 +114,9 @@ async def Help(ctx):
     embed.add_field(name="Rudolf", value="Ask him any question after its name, and he shall respond.", inline=False)
     embed.add_field(name="Play + {URL}", value="The bot will put on whatever video you choose.", inline=False)
     embed.add_field(name="Leave / Stop", value="Will order the Bot to leave the voice channel.", inline=False)
-    embed.add_field(name="createPoll", value="Creates a Poll, takes from 2 to 5 arguments (In Progress)", inline=False)
+    embed.add_field(name="createPoll ¨question¨ arg arg arg...", value="Creates a Poll, takes from 2 to 10 arguments", inline=False)
     embed.add_field(name="Placements", value="Shows the winners of every Ping Pongathon tournament", inline=False)
-    
+
     embed.set_footer(text="Prefix:  " + Prefix)
 
     await author.send(embed=embed)
@@ -121,7 +124,7 @@ async def Help(ctx):
 
 #----------POLL-----------------------------
         
-@client.command(name="Poll", aliases=["createPoll"])
+@client.command(name="Poll", aliases=["createPoll", "CreatePoll"])
 @has_permissions(manage_guild=True)
 async def _createPoll(ctx, question, *options):
     if len(options) > 10:
@@ -147,4 +150,4 @@ async def _createPoll(ctx, question, *options):
 
 
 
-client.run("NzI5NjQ4OTE2MjY1Njk3MzMw.XwMA-w.XCnbfntodS3TW3G5CCOIQqpEbkc")
+client.run("NzI5NjQ4OTE2MjY1Njk3MzMw.XwrqlQ.ad1sEK5026ZnH7l8JznpAT5PgJA")
