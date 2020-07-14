@@ -6,11 +6,16 @@ from itertools import cycle
 from datetime import datetime, timedelta
 import random
 import os
+import sys
+import traceback
+
+import pw
+import mysqlfunctions
 
 #Made by Grodondo(Cdj), planning on updating it later on and including a monetary system.
 #This was a proyect made for a discord server based on the Ping Pong minigame from Overwatch, feel free to change its code at will.
 
-Prefix = "!"
+Prefix = "*"
 client = commands.Bot(command_prefix = Prefix)
 Client = discord.Client()
 client.remove_command("help")
@@ -116,6 +121,9 @@ async def Help(ctx):
     embed.add_field(name="Leave / Stop", value="Will order the Bot to leave the voice channel.", inline=False)
     embed.add_field(name="createPoll", value="Creates a Poll, takes from 2 to 5 arguments (In Progress)", inline=False)
     embed.add_field(name="Placements", value="Shows the winners of every Ping Pongathon tournament", inline=False)
+    embed.add_field(name="addTournament", value='adds Tournament \n parameters:date , gamemap , gamnetype , speed, [comment]; \nif a parameter contains whitespaces soround it with "". Dates are noted as Day/Month/Year', inline=False)
+    embed.add_field(name="register", value='adds a new User \n parameters: battletag , name , email , [nickname]; ', inline=False)
+    embed.add_field(name="participate", value="lets you participate in the next tournament", inline=False)
 
     embed.set_footer(text="Prefix:  " + Prefix)
 
@@ -144,10 +152,37 @@ async def _createPoll(ctx, question, *options):
         for emoji in numbers[:len(options)]:
             await message.add_reaction(emoji)
 
+#database commands:
+
+@client.command( aliases=["addTournament"])
+@has_permissions(manage_guild=True)
+async def addTornament(ctx, date, gamemap, gametype, speed, comment="No Comment"):
+    mysqlfunctions.add_tournament_tournament(date, gamemap, gametype, speed, comment)
+    mysqlfunctions.add_userscore_tournament()
+    await ctx.send("Tournament added")
 
 
 #--------------------------------------------
 
 
 
-client.run("Your token")
+@client.command( aliases=["register"])
+async def _register(ctx, battletag, name, email, nickname=""):
+
+    mysqlfunctions.register(battletag, ctx.author.name + "#" + ctx.author.discriminator, name, email, nickname)
+    await ctx.send("User " + ctx.author.name + " added")
+
+
+@client.command( aliases=["participate"])
+async def _participate(ctx):
+    try:
+        mysqlfunctions.participate(ctx.author.name + "#" + ctx.author.discriminator)
+        await ctx.send("You are registered as Participant for the next Tournament. Good Luck!")
+    except:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
+        await ctx.send("an Error occurred you might not be a user in the database yet. Please contact us")
+
+
+
+client.run(pw.get_bot_token())
