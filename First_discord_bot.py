@@ -7,10 +7,13 @@ from datetime import datetime, timedelta
 import random
 import os
 
+import pw
+import mysqlfunctions
+
 #Made by Grodondo(Cdj), planning on updating it later on and including a monetary system.
 #This was a proyect made for a discord server based on the Ping Pong minigame from Overwatch, feel free to change its code at will.
 
-Prefix = "!"
+Prefix = "*"
 client = commands.Bot(command_prefix = Prefix)
 Client = discord.Client()
 client.remove_command("help")
@@ -144,10 +147,14 @@ async def _createPoll(ctx, question, *options):
         for emoji in numbers[:len(options)]:
             await message.add_reaction(emoji)
 
+@client.command( aliases=["addTournament"])
+@has_permissions(manage_guild=True)
+async def addTornament(ctx,):
+    mysqlfunctions.add_tournament_tournament()
+    mysqlfunctions.add_userscore_tournament()
 
 
 #--------------------------------------------
 
 
-
-client.run("Your token")
+client.run(pw.get_bot_token())
