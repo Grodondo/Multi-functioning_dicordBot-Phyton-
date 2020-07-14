@@ -1,12 +1,14 @@
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import has_permissions 
-from itertools import cycle
 from datetime import datetime, timedelta
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
 # Create_Poll variables:
 numbers = ("1️⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣", "🔟")
+
+scheduler = AsyncIOScheduler()
 
 
 class Create_Polls(commands.Cog):
@@ -37,16 +39,17 @@ class Create_Polls(commands.Cog):
 
             self.polls.append((message.channel.id, message.id))
 
-            self.client.scheduler.add_job(self.poll_ended, "date", run_date=datetime.utcnow()+timedelta(seconds=hours), 
-                                          args=[message.channel.id, message.id])
+            scheduler.add_job(self.poll_ended, "date", run_date=datetime.now()+timedelta(seconds=hours),
+									   args=[message.channel.id, message.id])
+            scheduler.start()
 
-    async def poll_ended(self, ctx, channel_id, message_id):
+    async def poll_ended(self, channel_id, message_id):
         message = await self.client.get_channel(channel_id).fetch_message(message_id)
 
         most_voted = max(message.reactions, key=lambda r: r.count)
-        await ctx.send(f"The most voted was the {most_voted.emoji.name}")
-        #await message.channel.send("")
-        print("maybe it works e,e")
+        
+        await message.channel.send(f"The most voted option was the number {most_voted} making it the winner!")
+        print("Its harder than it looks, said a wise man.")
 
     @commands.Cog.listener()      # Events
     async def on_raw_reaction_add(self, payload):
@@ -54,7 +57,6 @@ class Create_Polls(commands.Cog):
             message = await self.client.get_channel(payload.channel_id).fetch_message(payload.message_id)
 
             for reaction in message.reactions:
-                print("For arg going thro")
                 if (not payload.member.bot   #I dont get why client doesnt work and bot does, but it works this way
                     and payload.member in await reaction.users().flatten()
                     and reaction.emoji != payload.emoji.name):
