@@ -10,3 +10,5 @@ setuptools==41.2.0
 websockets==8.1
 yarl==1.4.2
 youtube-dl==2020.6.16.1
+mysql-connector==2.2.9
+mysql-connector-python==8.0.21
