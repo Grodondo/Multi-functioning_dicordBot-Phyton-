@@ -10,4 +10,7 @@ setuptools==41.2.0
 websockets==8.1
 yarl==1.4.2
 youtube-dl==2020.6.16.1
+<<<<<<< HEAD
 APScheduler-3.6.3
+=======
+>>>>>>> ec559fdc229adcd21c724a7c80a173fbb5c03260
