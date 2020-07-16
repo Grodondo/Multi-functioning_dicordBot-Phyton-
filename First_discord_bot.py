@@ -8,21 +8,19 @@ import random
 import os
 import sys
 import traceback
-
 import pw
 import mysqlfunctions
 
 #Made by Grodondo(Cdj), planning on updating it later on and including a monetary system.
 #This was a proyect made for a discord server based on the Ping Pong minigame from Overwatch, feel free to change its code at will.
 
-Prefix = "*"
+
+Prefix = "!"
 client = commands.Bot(command_prefix = Prefix)
 Client = discord.Client()
 client.remove_command("help")
 
 status = cycle(["Overwatch", "Overwatch Ping Pong"])
-# Create_Poll variables:
-numbers = ("1️⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣", "🔟")
 
 @client.event
 async def on_ready():
@@ -119,7 +117,7 @@ async def Help(ctx):
     embed.add_field(name="Rudolf", value="Ask him any question after its name, and he shall respond.", inline=False)
     embed.add_field(name="Play + {URL}", value="The bot will put on whatever video you choose.", inline=False)
     embed.add_field(name="Leave / Stop", value="Will order the Bot to leave the voice channel.", inline=False)
-    embed.add_field(name="createPoll", value="Creates a Poll, takes from 2 to 5 arguments (In Progress)", inline=False)
+    embed.add_field(name="createPoll ¨question¨ arg arg arg...", value="Creates a Poll, takes from 2 to 10 arguments", inline=False)
     embed.add_field(name="Placements", value="Shows the winners of every Ping Pongathon tournament", inline=False)
     embed.add_field(name="addTournament", value='adds Tournament \n parameters:date , gamemap , gamnetype , speed, [comment]; \nif a parameter contains whitespaces soround it with "". Dates are noted as Day/Month/Year', inline=False)
     embed.add_field(name="register", value='adds a new User \n parameters: battletag , name , email , [nickname]; ', inline=False)
@@ -129,28 +127,6 @@ async def Help(ctx):
 
     await author.send(embed=embed)
 
-
-#----------POLL-----------------------------
-
-@client.command(name="Poll", aliases=["createPoll"])
-@has_permissions(manage_guild=True)
-async def _createPoll(ctx, question, *options):
-    if len(options) > 10:
-        await ctx.send("You can only supply up to 10 options.")
-    else:
-        embed = discord.Embed(title="Poll", description=question, colour=ctx.author.colour, timestamp=datetime.utcnow())
-
-        fields = [("Options", "\n".join([f"{numbers[idx]} {option}" for idx, option in enumerate(options)]), False),
-                  ("Instructions", "React to vote!", False)]
-        
-        for name, value, inline in fields:
-            embed.add_field(name=name, value=value, inline=inline)
-        message = await ctx.send(embed=embed)
-
-        print("May the light guide us all")
-
-        for emoji in numbers[:len(options)]:
-            await message.add_reaction(emoji)
 
 #database commands:
 
@@ -186,3 +162,4 @@ async def _participate(ctx):
 
 
 client.run(pw.get_bot_token())
+
