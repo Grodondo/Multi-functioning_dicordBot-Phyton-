@@ -12,7 +12,7 @@ import pw
 import mysqlfunctions
 
 #Made by Grodondo(Cdj), planning on updating it later on and including a monetary system.
-#This was a proyect made for a discord server based on the Ping Pong minigame from Overwatch, feel free to change its code at will.
+#This was a project made for a discord server based on the Ping Pong minigame from Overwatch, feel free to change its code at will.
 
 
 Prefix = "!"
@@ -132,10 +132,30 @@ async def Help(ctx):
 
 @client.command( aliases=["addTournament"])
 @has_permissions(manage_guild=True)
-async def addTornament(ctx, date, gamemap, gametype, speed, comment="No Comment"):
-    mysqlfunctions.add_tournament_tournament(date, gamemap, gametype, speed, comment)
-    mysqlfunctions.add_userscore_tournament()
-    await ctx.send("Tournament added")
+async def addTornament(ctx, date, gamemap, gametype, speed, comment="No Comment",):
+
+    #await ctx.invoke(ctx.bot.get_command('ping'))
+    #await ctx.invoke(ctx.bot.get_command('Poll'), hours=11, question="", options=['1pm'])
+    await ctx.invoke(ctx.bot.get_command('Time_Poll'), 24, date, gamemap, gametype, speed, comment , 'At what Time should the next Tournament start?', 'pm' , 'pm', 'pm', 'pm' , 'pm', 'pm')
+
+
+
+
+
+    # mysqlfunctions.add_tournament_tournament(date, time, gamemap, gametype, speed, comment)
+    #mysqlfunctions.add_userscore_tournament()
+
+
+    # comment = ""
+    #
+    # await ctx.send("Tournament added")
+    # try:
+    #     channel = ctx.guild.get_channel(733373412621156464)
+    #     await channel.send("```New Tournament on the "+date + " at " + time +" \nGood Luck" + "\n"+comment+"```")
+    # except:
+    #     exc_type, exc_value, exc_traceback = sys.exc_info()
+    #     traceback.print_exception(exc_type, exc_value, exc_traceback)
+    #     await ctx.send("no such channel")
 
 
 #--------------------------------------------
@@ -143,21 +163,45 @@ async def addTornament(ctx, date, gamemap, gametype, speed, comment="No Comment"
 
 
 @client.command( aliases=["register"])
-async def _register(ctx, battletag, name, email, nickname=""):
-
-    mysqlfunctions.register(battletag, ctx.author.name + "#" + ctx.author.discriminator, name, email, nickname)
-    await ctx.send("User " + ctx.author.name + " added")
+async def registerUser(ctx, battletag, name, nickname=""):
+        mysqlfunctions.add_register(battletag, ctx.author.name + "#" + ctx.author.discriminator, name, nickname)
+        await ctx.send("user " + ctx.author.name + " added")
+        try:
+            role = get(ctx.guild.roles, name='Users')
+            await ctx.message.author.add_roles(role)
+        except:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            traceback.print_exception(exc_type, exc_value, exc_traceback)
 
 
 @client.command( aliases=["participate"])
-async def _participate(ctx):
+async def participateUser(ctx):
     try:
-        mysqlfunctions.participate(ctx.author.name + "#" + ctx.author.discriminator)
+        mysqlfunctions.add_participate(ctx.author.name + "#" + ctx.author.discriminator)
         await ctx.send("You are registered as Participant for the next Tournament. Good Luck!")
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_exception(exc_type, exc_value, exc_traceback)
         await ctx.send("an Error occurred you might not be a user in the database yet. Please contact us")
+
+
+#error handeling
+
+@registerUser.error
+async def on_command_error(ctx , error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("you might be missing an argument")
+    else:
+        await ctx.send("an unknown Error occurred. Please contact one of our staff members")
+        print(error)
+
+@Rudolf.error
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("you might be missing an argument")
+    else:
+        await ctx.send("an unknown Error occurred. Please contact one of our staff members")
+        print(error)
 
 
 

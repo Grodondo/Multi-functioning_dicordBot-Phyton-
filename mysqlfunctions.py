@@ -24,19 +24,19 @@ def add_userscore_tournament():
     mydb.close()
 
 
-def add_tournament_tournament(date, gamemap, gametype, speed, comment):
+def add_tournament_tournament(date, time ,gamemap, gametype, speed, comment):
     mydb = connectToDB()
     mycursor = mydb.cursor()
 
     mycursor.execute(
-        "INSERT INTO `pingpong`.`tournaments` (tdate, tmap, ttype, tcomment, tspeed) " +
-        "VALUES ('" + date + "','" + gamemap + "','" + gametype + "','" + speed + "','" + comment + "');"
+        "INSERT INTO `pingpong`.`tournaments` (tdate,ttime, tmap, ttype, tcomment, tspeed) " +
+        "VALUES ('" + date + "','" + time + "','" + gamemap + "','" + gametype + "','" + speed + "','" + comment + "');"
     )
     mycursor.close()
     mydb.commit()
     mydb.close()
 
-def participate(dctag):
+def add_participate(dctag):
     mydb = connectToDB()
     mycursor = mydb.cursor()
 
@@ -58,17 +58,29 @@ def getScoreboard():
     mydb = connectToDB()
 
 
-def register(battletag, dctag, name, email, nickname):
+def add_register(battletag, dctag, name, nickname):
     mydb = connectToDB()
     mycursor = mydb.cursor()
 
     if (not nickname):
         nickname = name
 
-    mycursor.execute("INSERT INTO `pingpong`.`users` (battletag, discordtag, name, nickname, email)" +
-                     "VALUES ('" + battletag + "','" + dctag + "','" + name + "','" + nickname + "','" + email+"');")
+    data_register = {
+        'bt': battletag,
+        'dt': dctag,
+        'n': name,
+        'nn': nickname
+    }
 
-    mycursor.execute("Select idusers From `pingpong`.`users` Where discordtag = '"+ dctag+"'")
+    data_reg2 = {
+        'disc': dctag,
+    }
+
+    mycursor.execute("INSERT INTO `pingpong`.`users` (battletag, discordtag, name, nickname) " +
+                     "VALUES (%(bt)s,%(dt)s,%(n)s,%(nn)s);", data_register)
+
+    mycursor.execute("Select idusers From `pingpong`.`users` Where discordtag = %(disc)s", data_reg2)
+
     userid = str(mycursor.fetchone()[0])
 
     mycursor.execute("INSERT INTO `pingpong`.`userscores` (userid)" +

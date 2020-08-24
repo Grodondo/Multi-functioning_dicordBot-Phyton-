@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-from discord.ext.commands import has_permissions 
+from discord.ext.commands import has_permissions
 from datetime import datetime, timedelta
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -49,7 +49,8 @@ class Create_Polls(commands.Cog):
         most_voted = max(message.reactions, key=lambda r: r.count)
         
         await message.channel.send(f"The most voted option was the number {most_voted} making it the winner!")
-        print("Its harder than it looks, said a wise man.")
+        #print("Its harder than it looks, said a wise man.")
+        print(most_voted)
 
     @commands.Cog.listener()      # Events
     async def on_raw_reaction_add(self, payload):
